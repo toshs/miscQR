@@ -107,9 +107,7 @@ class Whim:
         return qr
 
     def search_similar_qr(self):
-        print("search similar QR:", self.data)
-        print("possible error:", self.possible_error)
-        print(self.qr.processed_code)
+        ret = {}
         character = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
         part = self.data.split(".")
         for i in range(len(part[0])):
@@ -119,27 +117,25 @@ class Whim:
                 candidate = ".".join([candidate] + part[1:])
                 cand_qr = QR(candidate, self.version, self.error_correction)
                 if self.diff(self.qr.processed_code, cand_qr.processed_code) == self.possible_error[0] * 2 + 1:
-                    print(candidate)
                     left, right, index = self.mix(self.qr.processed_code, cand_qr.processed_code, self.possible_error[0])
                     if index == -1: continue
                     cand_qr.processed_code = left
                     cand_qr.matrix = cand_qr.make_matrix(Bitarray(cand_qr.processed_code).array)
                     cand_qr.masked_matrix = cand_qr.mask(cand_qr.mask_pattern)
                     cand_qr.image = cand_qr.make_image(cand_qr.masked_matrix, cand_qr.color)
-                    cand_qr.image.show()
                     src = np.asarray(cand_qr.image, dtype=np.uint16)
 
                     cand_qr.processed_code = right 
                     cand_qr.matrix = cand_qr.make_matrix(Bitarray(cand_qr.processed_code).array)
                     cand_qr.masked_matrix = cand_qr.mask(cand_qr.mask_pattern)
                     cand_qr.image = cand_qr.make_image(cand_qr.masked_matrix, cand_qr.color)
-                    cand_qr.image.show()
                     dst = np.asarray(cand_qr.image, dtype=np.uint16)
 
                     mixed = np.asarray((src + dst)//2, dtype=np.uint8)
                     middle = Image.fromarray(mixed)
-                    middle.show()
-                    input()
+
+                    ret[candidate] = middle
+        return ret
 
     @classmethod
     def make_qr(cls, data, version, error_correction):
@@ -184,20 +180,8 @@ class Whim:
         return left, right, index 
                 
 if __name__ == '__main__':
-    # Get Time
-    from time import gmtime, strftime
-    T = strftime('%Y%m%d%H%M%S', gmtime())
-
-    if len(sys.argv) < 2:
-        print("usage: python3 whim.py <data>")
-        sys.exit()
     data = sys.argv[1]
-
-    filename = data + T
 
     # Generate Whim
     whim = Whim(data=data, version=2 ,error_correction=3)
-    whim.search_similar_qr()
-
-    image = whim.qr.image
-    whim.qr.image = image.resize((image.width * whim.box_size, image.height * whim.box_size))
+    ret = whim.search_similar_qr()
