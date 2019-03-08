@@ -1,8 +1,17 @@
 # miscQR
 
+## Install
+### Manual
+
+- ```git clone https://github.com/toshs/misqr.git```
+
+- ```cd misqr```
+
+- ```pip3 install -e .```
+
 ## Example
 ```sh
-python3 -i -m src.whim toshs.github.io/miscQR/a.html -6
+python3 -i -m misqr.whim toshs.github.io/miscQR/a.html -6
 >>> ret
 {'toshs.github.io/miscQR/b.html': <PIL.Image.Image image mode=RGB size=29x29 at ...
  ... 'toshs.github.io/miscQR/3.html': <PIL.Image.Image image mode=RGB size=29x29 at 0x116DF2438>}
