@@ -212,6 +212,12 @@ def main():
     # Generate Whim
     whim = Whim(data=data, version=4 ,error_correction=3)
     ret = whim.search_similar_qr(index)
+    print('Option')
+    for i, (key, value) in enumerate(ret.items()):
+        print('', key)
+    option = input('Select:')
+    ret[option].show()
+
 
 if __name__ == "__main__":
     main()
