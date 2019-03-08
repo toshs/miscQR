@@ -210,5 +210,5 @@ if __name__ == '__main__':
     index = int(sys.argv[2])
 
     # Generate Whim
-    whim = Whim(data=data, version=3 ,error_correction=3)
+    whim = Whim(data=data, version=4 ,error_correction=3)
     ret = whim.search_similar_qr(index)
