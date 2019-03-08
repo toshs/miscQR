@@ -106,9 +106,35 @@ class Whim:
         qr.makeImpl(False, qr.mask_pattern)
         return qr
 
-    def search_similar_qr(self):
+    def search_similar_qr(self, index=0):
         ret = {}
         character = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+        for c in character:
+            if self.data[index] == c: continue
+            candidate = self.data[:index] + c + (self.data[index+1:] if index != -1 else "")
+            cand_qr = QR(candidate, self.version, self.error_correction)
+            if self.diff(self.qr.processed_code, cand_qr.processed_code) == self.possible_error[0] * 2 + 1:
+                left, right, found = self.mix(self.qr.processed_code, cand_qr.processed_code, self.possible_error[0])
+                if found == -1: continue
+                cand_qr.processed_code = left
+                cand_qr.matrix = cand_qr.make_matrix(Bitarray(cand_qr.processed_code).array)
+                cand_qr.masked_matrix = cand_qr.mask(cand_qr.mask_pattern)
+                cand_qr.image = cand_qr.make_image(cand_qr.masked_matrix, cand_qr.color)
+                src = np.asarray(cand_qr.image, dtype=np.uint16)
+
+                cand_qr.processed_code = right 
+                cand_qr.matrix = cand_qr.make_matrix(Bitarray(cand_qr.processed_code).array)
+                cand_qr.masked_matrix = cand_qr.mask(cand_qr.mask_pattern)
+                cand_qr.image = cand_qr.make_image(cand_qr.masked_matrix, cand_qr.color)
+                dst = np.asarray(cand_qr.image, dtype=np.uint16)
+
+                mixed = np.asarray((src + dst)//2, dtype=np.uint8)
+                middle = Image.fromarray(mixed)
+
+                ret[candidate] = middle
+        return ret
+
+
         part = self.data.split(".")
         for i in range(len(part[0])):
             for c in character:
@@ -181,7 +207,8 @@ class Whim:
                 
 if __name__ == '__main__':
     data = sys.argv[1]
+    index = int(sys.argv[2])
 
     # Generate Whim
-    whim = Whim(data=data, version=2 ,error_correction=3)
-    ret = whim.search_similar_qr()
+    whim = Whim(data=data, version=3 ,error_correction=3)
+    ret = whim.search_similar_qr(index)
