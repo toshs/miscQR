@@ -14,7 +14,7 @@ class QR():
     ERROR_CORRECT_Q = 2
     ERROR_CORRECT_H = 3
 
-    def __init__(self, data, version, error_correct_level, mask_pattern=0b000, color="#777777"):
+    def __init__(self, data, version, error_correct_level, mask_pattern=0b000, color="#000000"):
         self.data = data
         self.version = version
         self.error_correct_level = error_correct_level
