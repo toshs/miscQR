@@ -6,7 +6,7 @@ setup(
     install_requires=["reedsolo", "pillow", "numpy"],
     entry_points={
         "console_scripts": [
-            "whimq = src.whim:main",
+            "whimq = misqr.whim:main",
         ],
     }
 )
