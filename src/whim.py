@@ -164,9 +164,6 @@ class Whim:
         index = -1
         left = []
         right = []
-        # diff1 = code1[:]
-        # diff2 = code2[:]
-        # common = code1[:]
         for i, (c1, c2) in enumerate(zip(code1, code2)):
             if c1 != c2:
                 if index == -1 and bin(c1 ^ c2).count('1') == 1:
@@ -181,15 +178,9 @@ class Whim:
                     left.append(c2)
                     right.append(c2)
                 count += 1
-                # diff1[i] = c1
-                # diff2[i] = c2
-                # common[i] = -1
             else:
                 left.append(c1)
                 right.append(c1)
-                # diff1[i] = -1
-                # diff2[i] = -1
-                # common[i] = c1
         return left, right, index 
                 
 if __name__ == '__main__':
@@ -210,25 +201,3 @@ if __name__ == '__main__':
 
     image = whim.qr.image
     whim.qr.image = image.resize((image.width * whim.box_size, image.height * whim.box_size))
-
-    # Generate False Pattern
-    # S = np.array([255,255,255])//4*3
-    f = BayerFilter(whim.box_size//2, whim.box_size//2)
-    f.pix = np.array(
-        [[W, K],
-        [K, K]]
-    )
-    f.makeBayerFilter()
-    f.makeImage()
-    pixel = f.image
-
-    # Set Pattern to Image
-    white_pixel_position = np.where(np.logical_not(np.array(whim.qr.masked_matrix)))
-    tx, ty = 0, 0
-    for x, y in zip(white_pixel_position[0], white_pixel_position[1]):
-        if x > 9 and y > 9:
-            tx, ty = x, y
-            break
-
-    whim.set_pixel(pixel, tx, ty)
-
