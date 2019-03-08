@@ -205,10 +205,13 @@ class Whim:
                 right.append(c1)
         return left, right, index 
                 
-if __name__ == '__main__':
+def main():
     data = sys.argv[1]
     index = int(sys.argv[2])
 
     # Generate Whim
     whim = Whim(data=data, version=4 ,error_correction=3)
     ret = whim.search_similar_qr(index)
+
+if __name__ == "__main__":
+    main()
