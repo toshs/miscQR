@@ -5,11 +5,8 @@ from .util.block import Block
 from .util.qr import QR
 from .util.bitarray import Bitarray
 from PIL import Image
-import qrcode
 import numpy as np
 import sys
-import random
-import itertools
 
 class Whim:
     """
@@ -51,7 +48,7 @@ class Whim:
     def __init__(self, 
                  data,
                  version,
-                 error_correction=qrcode.constants.ERROR_CORRECT_H,
+                 error_correction=3,
                  pixel_size=1,
                  box_size=20,
                  border=4,
@@ -94,17 +91,6 @@ class Whim:
             for _ in range(block[0]):
                 possible_errors.append(error_code_length // 2)
         return possible_errors
-
-    # data配列[a,b,c,...]からQRを生成
-    def make_qr_from_data(self, data):
-        qr = self.make_qr(self.data, self.version, self.qr.error_correct_level)
-        qr.mask_pattern = qr.best_mask_pattern()
-        qr.data_cache = data
-        for r, row in enumerate(qr.modules):
-            for c, col in enumerate(row):
-                qr.modules[r][c] = None
-        qr.makeImpl(False, qr.mask_pattern)
-        return qr
 
     def search_similar_qr(self, index=0):
         ret = {}
@@ -162,15 +148,6 @@ class Whim:
 
                     ret[candidate] = middle
         return ret
-
-    @classmethod
-    def make_qr(cls, data, version, error_correction):
-        qr = qrcode.QRCode(version=version, 
-            error_correction=error_correction, 
-        )
-        qr.add_data(data)
-        qr.make()
-        return qr
 
     @classmethod
     def diff(cls, code1, code2):
