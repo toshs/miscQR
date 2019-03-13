@@ -193,7 +193,7 @@ def main():
     for i, (key, value) in enumerate(ret.items()):
         print('', key)
     option = input('Select:')
-    ret[option].show()
+    ret[option].resize((300, 300)).show()
 
 
 if __name__ == "__main__":
