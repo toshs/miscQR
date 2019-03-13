@@ -7,6 +7,7 @@ setup(
     entry_points={
         "console_scripts": [
             "whimq = misqr.whim:main",
+            "qash= misqr.qash:main",
         ],
     }
 )
