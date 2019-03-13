@@ -3,11 +3,11 @@
 ## Install
 ### Manual
 
-- ```git clone https://github.com/toshs/misqr.git```
-
-- ```cd misqr```
-
-- ```pip3 install -e .```
+```sh
+git clone https://github.com/toshs/misqr.git
+cd misqr
+pip3 install -e .
+```
 
 ## Example
 ```sh
