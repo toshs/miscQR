@@ -75,7 +75,8 @@ class Qash:
 
         # QRを限界まで壊す 
         blocks = self.qr.data_blocks
-        blocks[0].randomize(self.possible_error[0]-self.insertion+1)
+        for i in range(len(blocks)):
+            blocks[i].randomize(self.possible_error[i]-self.insertion+1)
         self.qr.set_blocks(blocks)
         
         self.qr.image = self.qr.image.resize((self.qr.image.width * self.box_size, self.qr.image.height * self.box_size))
@@ -133,7 +134,7 @@ def main():
     filename = data + T
 
     # Generate Qash
-    qash = Qash(data=data, version=2 ,error_correction=3)
+    qash = Qash(data=data, version=4 ,error_correction=3)
 
     # Generate False Pattern
     # S = np.array([255,255,255])//4*3
@@ -149,7 +150,7 @@ def main():
     # Set Pattern to Image
     white_pixel_position = np.where(np.logical_not(np.array(qash.qr.masked_matrix)))
     tx, ty = 0, 0
-    for x, y in zip(white_pixel_position[0], white_pixel_position[1]):
+    for y, x in zip(white_pixel_position[0], white_pixel_position[1]):
         if x > 9 and y > 9:
             tx, ty = x, y
             break
